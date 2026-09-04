@@ -1,4 +1,5 @@
 import { supabase } from './supabase-client.js';
+import { CONTENT_MAP, PAGE_LABELS, getAllEntries } from './content-map.js';
 
 // ----- 認証状態管理 -----
 let currentUser = null;
@@ -36,6 +37,7 @@ function showAdminPanel() {
   document.getElementById('adminPanel').style.display = 'block';
   document.getElementById('adminUserLabel').textContent = currentUser.email;
   loadNewsList();
+  initTextSubTabs();
 }
 
 async function handleLogin() {
@@ -64,6 +66,14 @@ function showAdminError(msg) {
   el.textContent = msg;
   el.style.display = 'block';
   setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+// ----- タブ切替 -----
+function switchTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.admin-tab-content').forEach(function(c) { c.classList.remove('active'); });
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  document.getElementById('tabContent' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
 }
 
 // ----- お知らせ一覧読み込み -----
@@ -117,8 +127,6 @@ function showAddForm() {
 
 function editNews(id) {
   editingId = id;
-  const items = document.querySelectorAll('.admin-news-item');
-  // DBから該当レコードを取得
   fetchNewsForEdit(id);
 }
 
@@ -170,7 +178,6 @@ async function saveNews(e) {
   saveBtn.textContent = '保存中...';
 
   if (id) {
-    // 更新
     const { error } = await supabase
       .from('news')
       .update({ date, category, heading, body, sort_order: sortOrder })
@@ -182,7 +189,6 @@ async function saveNews(e) {
       return;
     }
   } else {
-    // 新規追加
     const { error } = await supabase
       .from('news')
       .insert({ date, category, heading, body, sort_order: sortOrder });
@@ -207,6 +213,118 @@ async function deleteNews(id) {
     return;
   }
   loadNewsList();
+}
+
+// ===== テキスト編集機能 =====
+let currentTextPage = 'home';
+var textContentCache = {};
+
+function initTextSubTabs() {
+  var container = document.getElementById('textSubTabs');
+  if (!container) return;
+  container.innerHTML = Object.keys(CONTENT_MAP).map(function(page) {
+    return '<button class="text-sub-tab' + (page === 'home' ? ' active' : '') + '" onclick="switchTextPage(\'' + page + '\')">' + PAGE_LABELS[page] + '</button>';
+  }).join('');
+  loadTextList('home');
+}
+
+function switchTextPage(page) {
+  currentTextPage = page;
+  document.querySelectorAll('.text-sub-tab').forEach(function(t) { t.classList.remove('active'); });
+  event.target.classList.add('active');
+  cancelTextEdit();
+  loadTextList(page);
+}
+
+async function loadTextList(page) {
+  var entries = CONTENT_MAP[page] || [];
+  var keys = entries.map(function(e) { return e.key; });
+
+  var container = document.getElementById('textListContainer');
+  if (!container) return;
+  container.innerHTML = '<p style="color:var(--admin-muted);text-align:center;padding:24px">読み込み中...</p>';
+
+  var r = await supabase.from('site_contents').select('content_key, content, label, page').in('content_key', keys);
+  if (r.error) {
+    container.innerHTML = '<p style="color:var(--admin-error)">テキストの読み込みに失敗しました。</p>';
+    return;
+  }
+
+  var dbMap = {};
+  (r.data || []).forEach(function(row) { dbMap[row.content_key] = row; });
+
+  container.innerHTML = entries.map(function(entry) {
+    var dbRow = dbMap[entry.key];
+    var currentContent = dbRow ? dbRow.content : '';
+    var isEdited = !!dbRow;
+    var preview = currentContent ? (currentContent.length > 60 ? currentContent.substring(0, 60) + '...' : currentContent) : '（未編集・デフォルト）';
+    return '<div class="text-item' + (isEdited ? ' text-item-edited' : '') + '">' +
+      '<div class="text-item-label">' + escapeHtml(entry.label) + '</div>' +
+      '<div class="text-item-preview">' + escapeHtml(preview) + '</div>' +
+      '<button class="admin-btn-edit" onclick="editTextItem(\'' + entry.key + '\')">編集</button>' +
+    '</div>';
+  }).join('');
+
+  textContentCache = dbMap;
+}
+
+function editTextItem(key) {
+  var entries = getAllEntries();
+  var entry = entries.find(function(e) { return e.key === key; });
+  if (!entry) return;
+
+  var dbRow = textContentCache[key];
+  var currentContent = dbRow ? dbRow.content : '';
+
+  document.getElementById('textContentKey').value = key;
+  document.getElementById('textLabel').value = entry.label;
+  document.getElementById('textContent').value = currentContent;
+  document.getElementById('textFormTitle').textContent = entry.label + ' を編集';
+  document.getElementById('textEditArea').style.display = 'block';
+  document.getElementById('textListContainer').style.display = 'none';
+  document.getElementById('textContent').focus();
+}
+
+function cancelTextEdit() {
+  document.getElementById('textEditArea').style.display = 'none';
+  document.getElementById('textListContainer').style.display = 'block';
+}
+
+async function saveTextItem(e) {
+  e.preventDefault();
+  var key = document.getElementById('textContentKey').value;
+  var content = document.getElementById('textContent').value.trim();
+  if (!key) return;
+
+  var entries = getAllEntries();
+  var entry = entries.find(function(e) { return e.key === key; });
+  if (!entry) return;
+
+  var saveBtn = document.getElementById('saveTextBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = '保存中...';
+
+  var dbRow = textContentCache[key];
+  if (dbRow && dbRow.content !== undefined) {
+    var { error } = await supabase
+      .from('site_contents')
+      .update({ content: content, updated_at: new Date().toISOString() })
+      .eq('content_key', key);
+  } else {
+    var { error } = await supabase
+      .from('site_contents')
+      .insert({ content_key: key, page: entry.page, label: entry.label, content: content });
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = '保存';
+  if (error) {
+    showAdminError('保存に失敗しました。もう一度お試しください。');
+    return;
+  }
+
+  cancelTextEdit();
+  loadTextList(currentTextPage);
 }
 
 // ----- ユーティリティ -----
@@ -237,6 +355,11 @@ window.editNews = editNews;
 window.deleteNews = deleteNews;
 window.cancelForm = cancelForm;
 window.saveNews = saveNews;
+window.switchTab = switchTab;
+window.switchTextPage = switchTextPage;
+window.editTextItem = editTextItem;
+window.cancelTextEdit = cancelTextEdit;
+window.saveTextItem = saveTextItem;
 
 // ----- 初期化 -----
 document.addEventListener('DOMContentLoaded', checkAuth);

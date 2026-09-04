@@ -305,9 +305,32 @@ function heroUpdateDots() {
   if (active.length > 0 && active.indexOf(heroIdx) < 0) heroGo(active[0]);
 }
 
+async function applyContentOverrides() {
+  try {
+    if (!supabase) {
+      var mod = await import('./supabase-client.js');
+      supabase = mod.supabase;
+    }
+    var { CONTENT_MAP } = await import('./content-map.js');
+    var r = await supabase.from('site_contents').select('content_key, content');
+    if (r.error || !r.data) return;
+    r.data.forEach(function(row) {
+      var entries = Object.values(CONTENT_MAP).flat();
+      var entry = entries.find(function(e) { return e.key === row.content_key; });
+      if (!entry) return;
+      var el = document.querySelector(entry.selector);
+      if (el) el.textContent = row.content;
+    });
+  } catch(e) {
+    // サイレントフェイル
+  }
+}
+window.applyContentOverrides = applyContentOverrides;
+
 async function init() {
   var news = await getNews();
   renderHomeNews(news);
+  await applyContentOverrides();
   heroUpdateDots();
   heroRestartTimer();
   document.querySelectorAll('#navLinks a').forEach(function(a) {
