@@ -1,28 +1,4 @@
-
-// ----- Storage wrapper (localStorage based, browser-compatible) -----
-if (!window.storage) {
-  window.storage = {
-    get: function(key) {
-      return new Promise(function(resolve) {
-        try {
-          var v = localStorage.getItem(key);
-          resolve(v !== null ? { value: v } : null);
-        } catch(e) { resolve(null); }
-      });
-    },
-    set: function(key, value) {
-      return new Promise(function(resolve) {
-        try { localStorage.setItem(key, value); resolve(true); } catch(e) { resolve(false); }
-      });
-    },
-    delete: function(key) {
-      return new Promise(function(resolve) {
-        try { localStorage.removeItem(key); resolve(true); } catch(e) { resolve(false); }
-      });
-    }
-  };
-}
-
+import { supabase } from './supabase-client.js';
 
 // 施工・対応事例 詳細データ
 var caseDetails = {
@@ -194,10 +170,18 @@ function submitForm() {
 function fmtDate(d) { return d.replace(/-/g, '.'); }
 
 async function getNews() {
-  var list;
-  try { var r = await window.storage.get('bosai-news'); list = r ? JSON.parse(r.value) : defaultNews; }
-  catch(e) { list = defaultNews; }
-  return list.slice().sort(function(a,b){ return a.date<b.date ? 1 : (a.date>b.date ? -1 : 0); });
+  try {
+    var r = await supabase.from('news').select('date,category,heading,body,sort_order').order('date',{ascending:false}).order('sort_order',{ascending:true});
+    if (r.error) throw r.error;
+    if (r.data && r.data.length > 0) {
+      return r.data.map(function(n) {
+        return { date: n.date, cat: n.category, title: n.heading + (n.body ? '\n' + n.body : '') };
+      });
+    }
+    return defaultNews;
+  } catch(e) {
+    return defaultNews;
+  }
 }
 
 async function renderHomeNews(list) {

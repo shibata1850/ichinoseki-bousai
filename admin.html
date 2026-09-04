@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>お知らせ管理 | 有限会社 一関防災設備</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/css/admin.css">
+</head>
+<body>
+<div class="admin-page">
+
+  <!-- ログイン画面 -->
+  <div id="adminLogin" style="display:none">
+    <div class="admin-login-card">
+      <h2>お知らせ管理</h2>
+      <p>お知らせの追加・編集・削除を行うには<br>ログインしてください。</p>
+      <div class="admin-error-msg" id="adminError"></div>
+      <div class="admin-field">
+        <label for="adminEmail">メールアドレス</label>
+        <input type="email" id="adminEmail" placeholder="admin@example.com" autocomplete="email">
+      </div>
+      <div class="admin-field">
+        <label for="adminPassword">パスワード</label>
+        <input type="password" id="adminPassword" placeholder="パスワード" autocomplete="current-password">
+      </div>
+      <button class="admin-login-btn" id="adminLoginBtn" onclick="handleLogin()">ログイン</button>
+      <a class="admin-back-link" href="/">← サイトに戻る</a>
+    </div>
+  </div>
+
+  <!-- 管理パネル -->
+  <div id="adminPanel" style="display:none">
+    <div class="admin-header">
+      <h1>お知らせ管理</h1>
+      <div class="admin-user-info">
+        <span class="admin-user-email" id="adminUserLabel"></span>
+        <button class="admin-logout-btn" onclick="handleLogout()">ログアウト</button>
+      </div>
+    </div>
+
+    <!-- 一覧エリア -->
+    <div id="newsListArea">
+      <div class="admin-section-header">
+        <h2>お知らせ一覧</h2>
+        <button class="admin-add-btn" onclick="showAddForm()">+ 新規追加</button>
+      </div>
+      <div id="newsListContainer"></div>
+    </div>
+
+    <!-- フォームエリア -->
+    <div id="newsFormArea" style="display:none">
+      <div class="admin-form-card">
+        <h2 id="formTitle">新規お知らせ追加</h2>
+        <form id="newsForm" onsubmit="saveNews(event)">
+          <input type="hidden" id="newsId">
+          <div class="admin-form-row">
+            <div class="admin-form-field">
+              <label for="newsDate">日付 *</label>
+              <input type="date" id="newsDate" required>
+            </div>
+            <div class="admin-form-field">
+              <label for="newsCategory">カテゴリ</label>
+              <select id="newsCategory">
+                <option value="お知らせ">お知らせ</option>
+                <option value="採用情報">採用情報</option>
+                <option value="施工・対応事例">施工・対応事例</option>
+                <option value="イベント">イベント</option>
+              </select>
+            </div>
+          </div>
+          <div class="admin-form-field">
+            <label for="newsHeading">見出し *</label>
+            <input type="text" id="newsHeading" required placeholder="お知らせのタイトルを入力">
+          </div>
+          <div class="admin-form-field">
+            <label for="newsBody">本文</label>
+            <textarea id="newsBody" placeholder="お知らせの詳細を入力（任意）"></textarea>
+          </div>
+          <div class="admin-form-field">
+            <label for="newsSortOrder">表示順</label>
+            <input type="number" id="newsSortOrder" value="0" min="0">
+          </div>
+          <div class="admin-form-actions">
+            <button type="submit" class="admin-save-btn" id="saveNewsBtn">保存</button>
+            <button type="button" class="admin-cancel-btn" onclick="cancelForm()">キャンセル</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script type="module" src="/src/js/admin.js"></script>
+</body>
+</html>
