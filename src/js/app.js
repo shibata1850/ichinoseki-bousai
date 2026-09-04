@@ -297,4 +297,14 @@ async function init() {
   updateHeaderScrolled();
   window.addEventListener('scroll', updateHeaderScrolled);
 }
+window.toggleMenu = toggleMenu;
+window.closeMenu = closeMenu;
+window.nav = nav;
+window.navTo = navTo;
+window.submitForm = submitForm;
+window.openCaseModal = openCaseModal;
+window.closeCaseModal = closeCaseModal;
+window.toggleFaq = toggleFaq;
+window.toggleNews = toggleNews;
+
 init();
