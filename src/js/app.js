@@ -1,4 +1,97 @@
-import { supabase } from './supabase-client.js';
+var supabase = null;
+
+window.toggleMenu = function() {
+  var btn = document.getElementById('hamburger');
+  var menu = document.getElementById('mobileMenu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+};
+window.closeMenu = function() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+};
+window.nav = function(page) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  var el = document.getElementById('page-' + page);
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }
+  document.querySelectorAll('#navLinks a').forEach(function(a) {
+    a.classList.toggle('active', a.getAttribute('data-page') === page);
+  });
+  if (page === 'news') renderFullNews();
+  if (page === 'home') {
+    document.body.classList.remove('inner-page');
+    document.getElementById('site-header').classList.remove('scrolled');
+  } else {
+    document.body.classList.add('inner-page');
+  }
+};
+window.navTo = function(page, sectionId) {
+  window.nav(page);
+  setTimeout(function() {
+    var el = document.getElementById(sectionId);
+    if (el) {
+      var top = el.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({top: top, behavior: 'smooth'});
+      el.classList.remove('highlight');
+      void el.offsetWidth;
+      el.classList.add('highlight');
+      setTimeout(function() { el.classList.remove('highlight'); }, 900);
+    }
+  }, 50);
+};
+window.submitForm = function() {
+  var n = document.getElementById('f-name').value.trim();
+  var t = document.getElementById('f-tel').value.trim();
+  var tp = document.getElementById('f-type').value;
+  var m = document.getElementById('f-msg').value.trim();
+  if (!n) { alert('お名前をご入力ください'); return; }
+  if (!t) { alert('電話番号をご入力ください'); return; }
+  if (!tp) { alert('お問い合わせ種別を選択してください'); return; }
+  if (!m) { alert('お問い合わせ内容をご入力ください'); return; }
+  document.getElementById('formArea').style.display = 'none';
+  document.getElementById('thanksArea').style.display = 'block';
+};
+window.openCaseModal = function(id) {
+  var d = caseDetails[id];
+  if (!d) return;
+  document.getElementById('cmLoc').textContent = d.loc;
+  document.getElementById('cmTitle').textContent = d.title;
+  document.getElementById('cmInquiry').textContent = d.inquiry;
+  document.getElementById('cmResponse').textContent = d.response;
+  document.getElementById('cmConsideration').textContent = d.consideration;
+  document.getElementById('cmRelated').textContent = d.related;
+  var cardImg = document.getElementById(id + 'Img');
+  var modalImg = document.getElementById('cmImg');
+  var modalPh = document.getElementById('cmPhIcon');
+  if (cardImg && cardImg.src && cardImg.style.display !== 'none' && cardImg.src.indexOf('data:') === 0 || (cardImg && cardImg.src && cardImg.src.length > 10)) {
+    modalImg.src = cardImg.src;
+    modalImg.style.display = 'block';
+    modalPh.style.display = 'none';
+  } else {
+    modalImg.src = '';
+    modalImg.style.display = 'none';
+    modalPh.style.display = 'flex';
+  }
+  document.getElementById('caseModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.closeCaseModal = function() {
+  document.getElementById('caseModal').classList.remove('open');
+  document.body.style.overflow = '';
+};
+window.toggleFaq = function(el) {
+  var item = el.parentElement;
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(i) { i.classList.remove('open'); });
+  if (!isOpen) item.classList.add('open');
+};
+window.toggleNews = function(head) {
+  var nfi = head.parentElement;
+  var wrap = nfi.querySelector('.nfi-body-wrap');
+  var willOpen = !nfi.classList.contains('open');
+  nfi.classList.toggle('open', willOpen);
+  if (wrap) { wrap.style.maxHeight = willOpen ? (wrap.scrollHeight + 'px') : '0'; }
+};
 
 // 施工・対応事例 詳細データ
 var caseDetails = {
@@ -52,38 +145,9 @@ var caseDetails = {
   }
 };
 
-function openCaseModal(id) {
-  var d = caseDetails[id];
-  if (!d) return;
-  document.getElementById('cmLoc').textContent = d.loc;
-  document.getElementById('cmTitle').textContent = d.title;
-  document.getElementById('cmInquiry').textContent = d.inquiry;
-  document.getElementById('cmResponse').textContent = d.response;
-  document.getElementById('cmConsideration').textContent = d.consideration;
-  document.getElementById('cmRelated').textContent = d.related;
-  // 写真状態を既存カードからコピー
-  var cardImg = document.getElementById(id + 'Img');
-  var modalImg = document.getElementById('cmImg');
-  var modalPh = document.getElementById('cmPhIcon');
-  if (cardImg && cardImg.src && cardImg.style.display !== 'none' && cardImg.src.indexOf('data:') === 0 || (cardImg && cardImg.src && cardImg.src.length > 10)) {
-    modalImg.src = cardImg.src;
-    modalImg.style.display = 'block';
-    modalPh.style.display = 'none';
-  } else {
-    modalImg.src = '';
-    modalImg.style.display = 'none';
-    modalPh.style.display = 'flex';
-  }
-  document.getElementById('caseModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeCaseModal() {
-  document.getElementById('caseModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
 // ESC キーで閉じる
 document.addEventListener('keydown', function(e){
-  if (e.key === 'Escape') closeCaseModal();
+  if (e.key === 'Escape') window.closeCaseModal();
 });
 
 var defaultNews = [
@@ -109,68 +173,14 @@ var photoSlotDefs = [
 ];
 
 
-function toggleMenu() {
-  var btn = document.getElementById('hamburger');
-  var menu = document.getElementById('mobileMenu');
-  btn.classList.toggle('open');
-  menu.classList.toggle('open');
-}
-function closeMenu() {
-  document.getElementById('hamburger').classList.remove('open');
-  document.getElementById('mobileMenu').classList.remove('open');
-}
-
-function nav(page) {
-  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-  var el = document.getElementById('page-' + page);
-  if (el) { el.classList.add('active'); window.scrollTo(0,0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }
-  document.querySelectorAll('#navLinks a').forEach(function(a) {
-    a.classList.toggle('active', a.getAttribute('data-page') === page);
-  });
-  if (page === 'news') renderFullNews();
-  // Inner pages use white sticky header; home uses transparent
-  if (page === 'home') {
-    document.body.classList.remove('inner-page');
-    document.getElementById('site-header').classList.remove('scrolled');
-  } else {
-    document.body.classList.add('inner-page');
-    // Ensure scroll to absolute top so sticky header doesn't cover content
-
-  }
-}
-
-function navTo(page, sectionId) {
-  nav(page);
-  setTimeout(function() {
-    var el = document.getElementById(sectionId);
-    if (el) {
-      var top = el.getBoundingClientRect().top + window.pageYOffset - 90;
-      window.scrollTo({top: top, behavior: 'smooth'});
-      el.classList.remove('highlight');
-      void el.offsetWidth;
-      el.classList.add('highlight');
-      setTimeout(function() { el.classList.remove('highlight'); }, 900);
-    }
-  }, 50);
-}
-
-function submitForm() {
-  var n = document.getElementById('f-name').value.trim();
-  var t = document.getElementById('f-tel').value.trim();
-  var tp = document.getElementById('f-type').value;
-  var m = document.getElementById('f-msg').value.trim();
-  if (!n) { alert('お名前をご入力ください'); return; }
-  if (!t) { alert('電話番号をご入力ください'); return; }
-  if (!tp) { alert('お問い合わせ種別を選択してください'); return; }
-  if (!m) { alert('お問い合わせ内容をご入力ください'); return; }
-  document.getElementById('formArea').style.display = 'none';
-  document.getElementById('thanksArea').style.display = 'block';
-}
-
 function fmtDate(d) { return d.replace(/-/g, '.'); }
 
 async function getNews() {
   try {
+    if (!supabase) {
+      var mod = await import('./supabase-client.js');
+      supabase = mod.supabase;
+    }
     var r = await supabase.from('news').select('date,category,heading,body,sort_order').order('date',{ascending:false}).order('sort_order',{ascending:true});
     if (r.error) throw r.error;
     if (r.data && r.data.length > 0) {
@@ -259,21 +269,6 @@ function heroUpdateDots() {
   if (active.length > 0 && active.indexOf(heroIdx) < 0) heroGo(active[0]);
 }
 
-function toggleFaq(el) {
-  var item = el.parentElement;
-  var isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(function(i) { i.classList.remove('open'); });
-  if (!isOpen) item.classList.add('open');
-}
-
-function toggleNews(head) {
-  var nfi = head.parentElement;
-  var wrap = nfi.querySelector('.nfi-body-wrap');
-  var willOpen = !nfi.classList.contains('open');
-  nfi.classList.toggle('open', willOpen);
-  if (wrap) { wrap.style.maxHeight = willOpen ? (wrap.scrollHeight + 'px') : '0'; }
-}
-
 async function init() {
   var news = await getNews();
   renderHomeNews(news);
@@ -297,14 +292,4 @@ async function init() {
   updateHeaderScrolled();
   window.addEventListener('scroll', updateHeaderScrolled);
 }
-window.toggleMenu = toggleMenu;
-window.closeMenu = closeMenu;
-window.nav = nav;
-window.navTo = navTo;
-window.submitForm = submitForm;
-window.openCaseModal = openCaseModal;
-window.closeCaseModal = closeCaseModal;
-window.toggleFaq = toggleFaq;
-window.toggleNews = toggleNews;
-
-init();
+init().catch(function(e) { console.error('init error:', e); });
