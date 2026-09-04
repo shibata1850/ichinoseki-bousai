@@ -218,6 +218,38 @@ async function deleteNews(id) {
 // ===== テキスト編集機能 =====
 let currentTextPage = 'home';
 var textContentCache = {};
+var defaultTextCache = {};
+var siteDocCache = null;
+
+async function fetchSiteDocument() {
+  if (siteDocCache) return siteDocCache;
+  try {
+    var resp = await fetch('/index.html');
+    var html = await resp.text();
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    siteDocCache = doc;
+    return doc;
+  } catch(e) {
+    return null;
+  }
+}
+
+function getDefaultText(entry) {
+  if (!siteDocCache) return '';
+  var el = siteDocCache.querySelector(entry.selector);
+  return el ? el.textContent.trim() : '';
+}
+
+async function preloadDefaultTexts(entries) {
+  var doc = await fetchSiteDocument();
+  if (!doc) return;
+  entries.forEach(function(entry) {
+    if (!(entry.key in defaultTextCache)) {
+      var el = doc.querySelector(entry.selector);
+      defaultTextCache[entry.key] = el ? el.textContent.trim() : '';
+    }
+  });
+}
 
 function initTextSubTabs() {
   var container = document.getElementById('textSubTabs');
@@ -244,6 +276,8 @@ async function loadTextList(page) {
   if (!container) return;
   container.innerHTML = '<p style="color:var(--admin-muted);text-align:center;padding:24px">読み込み中...</p>';
 
+  await preloadDefaultTexts(entries);
+
   var r = await supabase.from('site_contents').select('content_key, content, label, page').in('content_key', keys);
   if (r.error) {
     container.innerHTML = '<p style="color:var(--admin-error)">テキストの読み込みに失敗しました。</p>';
@@ -255,11 +289,11 @@ async function loadTextList(page) {
 
   container.innerHTML = entries.map(function(entry) {
     var dbRow = dbMap[entry.key];
-    var currentContent = dbRow ? dbRow.content : '';
     var isEdited = !!dbRow;
-    var preview = currentContent ? (currentContent.length > 60 ? currentContent.substring(0, 60) + '...' : currentContent) : '（未編集・デフォルト）';
+    var displayContent = isEdited ? dbRow.content : (defaultTextCache[entry.key] || '');
+    var preview = displayContent ? (displayContent.length > 60 ? displayContent.substring(0, 60) + '...' : displayContent) : '（テキストが見つかりません）';
     return '<div class="text-item' + (isEdited ? ' text-item-edited' : '') + '">' +
-      '<div class="text-item-label">' + escapeHtml(entry.label) + '</div>' +
+      '<div class="text-item-label">' + escapeHtml(entry.label) + (isEdited ? '' : ' <span class="text-default-badge">デフォルト</span>') + '</div>' +
       '<div class="text-item-preview">' + escapeHtml(preview) + '</div>' +
       '<button class="admin-btn-edit" onclick="editTextItem(\'' + entry.key + '\')">編集</button>' +
     '</div>';
@@ -274,7 +308,7 @@ function editTextItem(key) {
   if (!entry) return;
 
   var dbRow = textContentCache[key];
-  var currentContent = dbRow ? dbRow.content : '';
+  var currentContent = dbRow ? dbRow.content : (defaultTextCache[key] || '');
 
   document.getElementById('textContentKey').value = key;
   document.getElementById('textLabel').value = entry.label;

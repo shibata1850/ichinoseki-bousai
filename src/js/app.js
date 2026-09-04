@@ -315,6 +315,7 @@ async function applyContentOverrides() {
     var r = await supabase.from('site_contents').select('content_key, content');
     if (r.error || !r.data) return;
     r.data.forEach(function(row) {
+      if (!row.content) return;
       var entries = Object.values(CONTENT_MAP).flat();
       var entry = entries.find(function(e) { return e.key === row.content_key; });
       if (!entry) return;
