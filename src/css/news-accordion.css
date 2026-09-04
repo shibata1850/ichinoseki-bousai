@@ -1,0 +1,12 @@
+/* お知らせ：タイトル一覧＋本文クリック開閉 */
+.nfi-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.nfi-has-body .nfi-head{cursor:pointer}
+.nfi-head-main{flex:1;min-width:0}
+.nfi-head .nfi-heading{margin-bottom:0 !important;letter-spacing:-0.02em}
+.nfi-toggle{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#eef4fb;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:background .25s}
+.nfi-toggle svg{width:14px;height:14px;fill:var(--blue);transition:transform .25s}
+.nfi-has-body .nfi-head:hover .nfi-toggle{background:#dbeafe}
+.nfi.open .nfi-toggle{background:var(--blue)}
+.nfi.open .nfi-toggle svg{fill:#fff;transform:rotate(45deg)}
+.nfi-body-wrap{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.nfi-body-wrap .nfi-body-txt{padding-top:16px;-webkit-line-clamp:unset !important;display:block !important;overflow:visible !important}

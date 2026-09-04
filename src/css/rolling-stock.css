@@ -1,0 +1,169 @@
+#page-rolling{--pad:24px;--brand:#DA411E;--brand-d:#B93315;--navy:#0B4A96;--ink:#1E2328;--muted:#5C6672;--line:#E4E7EA;--soft:#F7F8FA;--corp:#F4F7FC;--home:#FDF6F4;--amber:#F2C230;--wrap:1180px;letter-spacing:normal;font-feature-settings:normal}
+#page-rolling img{display:block;max-width:100%;height:auto}
+#page-rolling .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--pad)}
+#page-rolling section{padding:64px 0}
+#page-rolling h2{margin:0 0 8px;font-size:clamp(24px,3vw,34px);line-height:1.3;letter-spacing:-.01em;text-align:center}
+#page-rolling .lead{margin:0 auto 40px;max-width:760px;text-align:center;font-size:14px;color:var(--muted)}
+
+/* --- ヒーロー --- */
+#page-rolling .hero{position:relative;overflow:hidden;padding:68px 0 0;min-height:auto;background:#fff;border-bottom:1px solid var(--line)}
+/* 写真を右側に敷き、左端を白でぼかして文字を重ねる。幅は1060pxで頭打ち */
+#page-rolling .hero-media{position:absolute;top:0;right:0;bottom:0;width:min(64%,1060px)}
+#page-rolling .hero-media img{width:100%;height:100%;object-fit:cover;object-position:center right}
+#page-rolling .hero-media::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.97) 18%,rgba(255,255,255,.70) 34%,rgba(255,255,255,0) 58%)}
+#page-rolling .hero-inner{position:relative;z-index:2;min-height:380px;display:flex;align-items:center;
+  max-width:var(--wrap);margin:0 auto;padding:52px 0}
+#page-rolling .hero-txt{max-width:600px;padding:0 var(--pad)}
+#page-rolling .hero h1{margin:0 0 14px;font-size:clamp(27px,3.4vw,42px);line-height:1.24;letter-spacing:-.03em;word-break:keep-all;overflow-wrap:normal}
+#page-rolling .hero .kicker{color:var(--brand);font-weight:700;font-size:clamp(13.5px,1.45vw,17px);margin:0 0 12px;word-break:keep-all}
+#page-rolling .hero .sub{font-size:12px;color:var(--muted);margin:0 0 26px;padding-top:12px;border-top:1px solid rgba(0,0,0,.12)}
+#page-rolling .hero-btns{display:flex;flex-wrap:wrap;gap:8px}
+
+#page-rolling .btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;white-space:nowrap;
+                   padding:12px 13px;border-radius:6px;border:1.5px solid var(--brand);color:var(--brand);background:#fff;
+                   cursor:pointer;transition:.15s}
+#page-rolling .btn svg{width:17px;height:17px;flex:0 0 auto}
+#page-rolling .btn:hover{background:#FDF2EF}
+#page-rolling .btn.solid{background:var(--brand);color:#fff}
+#page-rolling .btn.solid:hover{background:var(--brand-d)}
+
+/* --- 3つの柱 --- */
+#page-rolling .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+#page-rolling .pillar{border:1px solid var(--line);border-radius:10px;padding:22px 20px;background:#fff;
+                      display:flex;align-items:flex-start;gap:16px}
+#page-rolling .pillar svg{flex:0 0 auto;width:44px;height:44px;color:var(--brand);margin-top:2px}
+#page-rolling .pillar-icon-img{flex:0 0 auto;width:auto;height:80px;object-fit:contain;margin-top:0;display:block}
+#page-rolling .pillar-txt{min-width:0}
+#page-rolling .pillar h3{margin:0 0 6px;font-size:17px}
+#page-rolling .pillar p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.85}
+#page-rolling .pillar p.pillar-p-sm{font-size:11.5px;letter-spacing:-0.02em;line-height:1.75}
+
+/* --- 価値チップ --- */
+#page-rolling .values{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;padding-top:34px}
+#page-rolling .values .label{font-size:12.5px;color:var(--muted);margin-right:6px}
+#page-rolling .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--brand);color:var(--brand);
+                    border-radius:999px;padding:5px 14px;font-size:12.5px;font-weight:700;background:#fff}
+#page-rolling .chip svg{width:13px;height:13px}
+
+/* --- 法人 / 個人 パネル --- */
+#page-rolling .panels{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+#page-rolling .panel{border:1px solid var(--line);border-radius:14px;padding:26px 24px 28px;position:relative;min-width:0}
+#page-rolling .panel.corp{background:var(--corp);border-color:#DDE6F2}
+#page-rolling .panel.home{background:var(--home);border-color:#F4DED7}
+#page-rolling .tab{display:block;width:max-content;margin:0 auto 16px;color:#fff;font-size:13.5px;font-weight:700;
+                   padding:6px 22px;border-radius:6px}
+#page-rolling .panel.corp .tab{background:var(--navy)}
+#page-rolling .panel.home .tab{background:var(--brand)}
+#page-rolling .panel h3{margin:0 0 20px;text-align:center;font-size:clamp(18px,2.1vw,23px);letter-spacing:-.01em}
+#page-rolling .panel-body{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);gap:18px;align-items:start}
+#page-rolling .panel-body img{border-radius:10px;width:100%}
+#page-rolling .checks{list-style:none;margin:0;padding:0}
+#page-rolling .checks li{display:flex;align-items:flex-start;gap:9px;font-size:13px;font-weight:700;line-height:1.6;
+                         padding:11px 0;border-bottom:1px solid rgba(0,0,0,.07)}
+#page-rolling .checks li:last-child{border-bottom:0}
+#page-rolling .checks svg{flex:0 0 auto;width:17px;height:17px;margin-top:1px}
+#page-rolling .panel.corp .checks svg{color:var(--navy)}
+#page-rolling .panel.home .checks svg{color:var(--brand)}
+
+/* --- 備蓄管理台帳 --- */
+#page-rolling .ledger{margin-top:18px;background:#fff;border:1px solid #DDE6F2;border-radius:8px;padding:14px 14px 16px}
+#page-rolling .ledger .cap{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px}
+#page-rolling table{width:100%;border-collapse:collapse;font-size:12px}
+#page-rolling th,#page-rolling td{border:1px solid #DDE6F2;padding:7px 8px;text-align:left;white-space:nowrap}
+#page-rolling th{background:#E9F0F8;font-weight:700;text-align:center}
+#page-rolling td.n{text-align:right}
+#page-rolling td.c{text-align:center;font-weight:700}
+
+/* --- サービスの流れ --- */
+#page-rolling .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:26px}
+#page-rolling .step{position:relative;border:1px solid var(--line);border-radius:10px;padding:20px 16px 18px;background:#fff}
+#page-rolling .step::after{content:"";position:absolute;top:50%;right:-19px;width:0;height:0;
+  border-left:9px solid #C9CDD2;border-top:7px solid transparent;border-bottom:7px solid transparent;transform:translateY(-50%)}
+#page-rolling .step:last-child::after{display:none}
+#page-rolling .step .no{position:absolute;top:12px;left:12px;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:12.5px;font-weight:700;display:grid;place-items:center;z-index:2}
+#page-rolling .step svg{width:34px;height:34px;color:#2B3138;margin:8px 0 12px}
+#page-rolling .step h4{margin:0 0 6px;font-size:13px;line-height:1.5;text-align:center}
+#page-rolling .step p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.7;text-align:center}
+#page-rolling .step p.step-p-sm{font-size:10.5px;letter-spacing:-0.02em}
+
+/* --- 主な備蓄品 --- */
+#page-rolling .items{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;align-items:stretch}
+#page-rolling .item{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 6px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+#page-rolling .item img{width:100%;height:auto;margin:0 0 8px;display:block}
+#page-rolling .item span{font-size:12.5px;font-weight:700;line-height:1.4;display:block}
+#page-rolling .note{margin:18px 0 0;text-align:center;font-size:12px;color:var(--muted)}
+
+/* --- お悩み --- */
+#page-rolling .worries{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+#page-rolling .worry{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;
+                     padding:14px 12px;background:#fff;min-height:104px}
+#page-rolling .worry p{margin:0;flex:1 1 auto;font-size:12.5px;line-height:1.7}
+#page-rolling .worry img{flex:0 0 auto;width:56px}
+#page-rolling .catch{margin:34px auto 0;text-align:center;font-size:clamp(16px,2.3vw,25px);font-weight:700;color:var(--brand);
+                     line-height:1.5;max-width:900px}
+#page-rolling .catch span{background:linear-gradient(transparent 82%,rgba(242,194,48,.85) 82%)}
+
+/* --- FAQ --- */
+#page-rolling .faq{max-width:900px;margin:0 auto}
+#page-rolling details{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;background:#fff}
+#page-rolling summary{list-style:none;cursor:pointer;padding:15px 46px 15px 18px;font-size:13.5px;font-weight:700;position:relative}
+#page-rolling summary::-webkit-details-marker{display:none}
+#page-rolling summary::after{content:"";position:absolute;right:20px;top:50%;width:12px;height:2px;background:#6B7480;transform:translateY(-50%)}
+#page-rolling summary::before{content:"";position:absolute;right:25px;top:50%;width:2px;height:12px;background:#6B7480;transform:translateY(-50%);transition:.2s}
+#page-rolling details[open] summary::before{transform:translateY(-50%) rotate(90deg);opacity:0}
+#page-rolling details .a{padding:0 18px 16px;font-size:13px;color:var(--muted);line-height:1.9;border-top:1px solid var(--line);padding-top:14px}
+
+/* --- レスポンシブ --- */
+@media (max-width:1180px){
+  #page-rolling .items{grid-template-columns:repeat(4,1fr)}
+#page-rolling .values{display:grid !important;grid-template-columns:repeat(2,1fr) !important;gap:8px 10px !important;justify-content:center !important;padding:0 12px !important;max-width:520px;margin-left:auto;margin-right:auto}
+#page-rolling .values .label{grid-column:1 / -1;text-align:center;margin-bottom:6px}
+#page-rolling .values .chip{display:flex;justify-content:center;font-size:12.5px !important;padding:6px 10px !important;white-space:nowrap}
+#page-rolling .pillars{grid-template-columns:repeat(2,1fr)}
+#page-rolling .pillars .pillar:last-child{grid-column:1 / -1;max-width:calc(50% - 9px);margin:0 auto}
+  #page-rolling .flow{grid-template-columns:repeat(3,1fr);gap:22px}
+  #page-rolling .step:nth-child(3)::after{display:none}
+  #page-rolling .worries{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:860px){
+  #page-rolling section{padding:48px 0}
+  #page-rolling .hero-media{position:relative;width:100%;aspect-ratio:16/9}
+  #page-rolling .hero-media::after{display:none}
+  #page-rolling .hero-media img{object-position:center}
+  #page-rolling .hero-inner{min-height:0;padding:34px 0 38px;display:block}
+  #page-rolling .hero-txt{max-width:none}
+  #page-rolling .pillars{grid-template-columns:1fr}
+#page-rolling .pillars .pillar:last-child{grid-column:auto;max-width:none;margin:0}
+  #page-rolling .panels{grid-template-columns:1fr}
+#page-rolling .items{grid-template-columns:repeat(3,1fr)}
+#page-rolling .flow{grid-template-columns:repeat(2,1fr)}
+#page-rolling .flow .step:nth-child(2)::after{display:none}
+
+  #page-rolling table{font-size:11.5px;table-layout:auto}
+  #page-rolling th,#page-rolling td{padding:6px 4px;white-space:normal}
+  #page-rolling td.js-d{white-space:nowrap}
+  .rs-footer .in{grid-template-columns:1fr 1fr}
+}
+@media (max-width:600px){
+  /* 写真は素材幅の1/2を超えて拡大しない（滲み防止） */
+  #page-rolling .panel-body{grid-template-columns:1fr}
+  #page-rolling .panel-body img{max-width:330px;margin:0 auto}
+  #page-rolling .flow{grid-template-columns:1fr;gap:14px}
+  #page-rolling .step::after{display:none}
+  #page-rolling .items{grid-template-columns:repeat(2,1fr)}
+  #page-rolling .worries{grid-template-columns:1fr}
+  #page-rolling .btn{flex:1 1 100%;justify-content:center}
+  .rs-footer .in{grid-template-columns:1fr}
+  #page-rolling .ledger{overflow-x:auto}
+#page-rolling .hero-inner{padding:24px 0 30px !important}
+#page-rolling .values{display:grid !important;grid-template-columns:repeat(2,1fr) !important;gap:8px 10px !important;justify-content:center !important;padding:0 12px !important}
+#page-rolling .values .label{grid-column:1 / -1;text-align:center;margin-bottom:6px}
+#page-rolling .values .chip{display:flex;justify-content:center;font-size:12px !important;padding:6px 8px !important;white-space:nowrap}
+#page-rolling .hero h1{font-size:24px !important;line-height:1.28 !important}
+#page-rolling section{padding:36px 0 !important}
+
+}
+
+#page-rolling .step svg{width:52px !important;height:52px !important;margin:6px 0 12px !important}
+#page-rolling .step-icon-img{width:auto;height:52px;object-fit:contain;margin:6px auto 12px;display:block}

@@ -1,0 +1,4 @@
+/* ▼▼ 施工・対応事例：公開時 非表示。準備でき次第、この <style id="feat-gallery-hide"> ブロックごと削除すれば再表示されます ▼▼ */
+.feat-gallery{display:none !important}
+#page-gallery.feat-gallery{display:none !important}
+/* ▲▲ ここまで ▲▲ */

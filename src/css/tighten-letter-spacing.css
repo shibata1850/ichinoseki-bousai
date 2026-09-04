@@ -1,0 +1,5 @@
+/* ▼▼ 文字間隔を詰める（palt＋負トラッキング）。戻す場合はこの<style id="tighten-letter-spacing">ブロックごと削除 ▼▼ */
+body{font-feature-settings:"palt" 1;letter-spacing:-0.08em}
+.sec-title,.hero.hero-dark h1,.svc-hd h3,.svc-body h3,.why-body h3,.case-title,.case-desc,.case-modal-title,.cta-catch,.faq-qtxt,.nfi-heading,.nfi-body-txt,.case-section-text,.flow-step h4,.form-ttl,.field label,.co-table th,.nav-links li a,.ft-col li a,.ft-copy,.h-tel,.co-en,.svc-body p,.svc-bd p,.svc-bl li{letter-spacing:-0.08em}
+.svc-body p,.svc-bd p,.why-body p,.nfi-body-txt,.hero-desc,.case-desc,.faq-atxt,.cta-catch{line-height:1.6 !important}
+/* ▲▲ ここまで ▲▲ */
