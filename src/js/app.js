@@ -1,3 +1,10 @@
+import emailjs from '@emailjs/browser';
+
+var EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_ichinoseki';
+var EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_contact';
+var EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
+if (EMAILJS_PUBLIC_KEY) emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
 var supabase = null;
 
 window.toggleMenu = function() {
@@ -39,6 +46,7 @@ window.navTo = function(page, sectionId) {
     }
   }, 50);
 };
+
 window.submitForm = function() {
   var n = document.getElementById('f-name').value.trim();
   var t = document.getElementById('f-tel').value.trim();
@@ -48,8 +56,33 @@ window.submitForm = function() {
   if (!t) { alert('電話番号をご入力ください'); return; }
   if (!tp) { alert('お問い合わせ種別を選択してください'); return; }
   if (!m) { alert('お問い合わせ内容をご入力ください'); return; }
-  document.getElementById('formArea').style.display = 'none';
-  document.getElementById('thanksArea').style.display = 'block';
+
+  var btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+
+  var params = {
+    name: n,
+    company: document.getElementById('f-company').value.trim(),
+    tel: t,
+    email: document.getElementById('f-email').value.trim(),
+    type: tp,
+    building: document.getElementById('f-building').value,
+    timing: document.getElementById('f-timing').value,
+    fire_dept: document.querySelector('input[name="f-fmd"]:checked') ? document.querySelector('input[name="f-fmd"]:checked').value : '',
+    message: m
+  };
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+    .then(function() {
+      document.getElementById('formArea').style.display = 'none';
+      document.getElementById('thanksArea').style.display = 'block';
+    })
+    .catch(function(err) {
+      alert('送信に失敗しました。お手数ですが、お電話(0191-25-2277)にてご連絡ください。');
+      btn.disabled = false;
+      btn.textContent = '送信する　→';
+    });
 };
 window.openCaseModal = function(id) {
   var d = caseDetails[id];
