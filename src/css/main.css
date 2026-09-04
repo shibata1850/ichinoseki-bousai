@@ -488,8 +488,8 @@ footer{background:#fff;padding:56px 0 24px;border-top:1px solid var(--border-lig
 .ft-col li{margin-bottom:8px}
 .ft-col li a{font-size:14px;color:#2a4a6a;cursor:pointer;transition:color .2s;display:flex;align-items:center;gap:5px;letter-spacing:.01em}
 .ft-col li a:hover{color:var(--blue)}
-.ft-bot{display:flex;justify-content:space-between;align-items:center}
-.ft-copy{font-size:10px;color:var(--muted);letter-spacing:.03em;text-align:center;width:100%}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:nowrap;gap:12px}
+.ft-copy{font-size:10px;color:var(--muted);letter-spacing:.03em;text-align:center;flex:1;min-width:0}
 .ft-admin-link a{font-size:13px;color:var(--blue);text-decoration:underline;transition:color .2s}
 .ft-admin-link a:hover{color:var(--blue-dark)}
 
