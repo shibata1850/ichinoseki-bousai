@@ -139,7 +139,7 @@ async function fetchNewsForEdit(id) {
   document.getElementById('newsDate').value = data.date;
   document.getElementById('newsCategory').value = data.category;
   document.getElementById('newsHeading').value = data.heading;
-  document.getElementById('newsBody').value = data.body || '';
+  document.getElementById('newsBody').value = (data.body || '').replace(/\\n/g, '\n');
   document.getElementById('newsSortOrder').value = data.sort_order;
   document.getElementById('newsFormArea').style.display = 'block';
   document.getElementById('newsListArea').style.display = 'none';

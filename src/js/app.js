@@ -174,6 +174,10 @@ var photoSlotDefs = [
 
 
 function fmtDate(d) { return d.replace(/-/g, '.'); }
+function escapeHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 async function getNews() {
   try {
@@ -185,7 +189,7 @@ async function getNews() {
     if (r.error) throw r.error;
     if (r.data && r.data.length > 0) {
       return r.data.map(function(n) {
-        return { date: n.date, cat: n.category, title: n.heading + (n.body ? '\n' + n.body : '') };
+        return { date: n.date, cat: n.category, heading: n.heading, body: n.body || '' };
       });
     }
     return defaultNews;
@@ -199,8 +203,7 @@ async function renderHomeNews(list) {
   var el = document.getElementById('homeNewsList');
   if (!el) return;
   el.innerHTML = list.slice(0, 1).map(function(n) {
-    var title = n.title.split('\n')[0];
-    return '<div class="ni"><span class="nd">' + fmtDate(n.date) + '</span><span class="nt">' + title + '</span></div>';
+    return '<div class="ni"><span class="nd">' + fmtDate(n.date) + '</span><span class="nt">' + escapeHtml(n.heading) + '</span></div>';
   }).join('');
 }
 
@@ -212,20 +215,20 @@ async function renderFullNews(list) {
   el.innerHTML = list.map(function(n) {
     var p = n.date.split('-');
     var dateStr = p[0] + '.' + p[1] + '.' + p[2];
-    var parts = n.title.split('\n');
-    var heading = parts[0];
-    var body = parts.slice(1).join('\n');
+    var heading = n.heading || '';
+    var body = n.body || '';
     var catClass = '';
     if (n.cat === '採用情報') catClass = ' nfi-cat-chip-saiyou';
     else if (n.cat === '施工・対応事例') catClass = ' nfi-cat-chip-case';
     else if (n.cat === 'イベント') catClass = ' nfi-cat-chip-event';
     var hasBody = body && body.trim().length > 0;
+    var bodyHtml = hasBody ? escapeHtml(body).replace(/\n/g, '<br>') : '';
     return '<article class="nfi' + (hasBody ? ' nfi-has-body' : '') + '">' +
       '<div class="nfi-head"' + (hasBody ? ' onclick="toggleNews(this)"' : '') + '>' +
-        '<div class="nfi-head-main"><div class="nfi-meta"><span class="nfi-date">' + dateStr + '</span><span class="nfi-sep"></span><span class="nfi-cat-chip' + catClass + '">' + (n.cat || 'お知らせ') + '</span></div><h3 class="nfi-heading">' + heading + '</h3></div>' +
+        '<div class="nfi-head-main"><div class="nfi-meta"><span class="nfi-date">' + dateStr + '</span><span class="nfi-sep"></span><span class="nfi-cat-chip' + catClass + '">' + (n.cat || 'お知らせ') + '</span></div><h3 class="nfi-heading">' + escapeHtml(heading) + '</h3></div>' +
         (hasBody ? '<span class="nfi-toggle"><svg viewBox="0 0 24 24"><path d="M19 13H13v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></span>' : '') +
       '</div>' +
-      (hasBody ? '<div class="nfi-body-wrap"><div class="nfi-body-txt">' + body + '</div></div>' : '') +
+      (hasBody ? '<div class="nfi-body-wrap"><div class="nfi-body-txt">' + bodyHtml + '</div></div>' : '') +
     '</article>';
   }).join('');
 }
