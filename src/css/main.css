@@ -646,8 +646,8 @@ body.inner-page .hamburger span{background:var(--dark)}
 .mm-close:active svg,.mm-close:hover svg{fill:#fff}
 
 /* NAV: メニュー本体 */
-.mm-nav{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 28px;min-height:0;position:relative;z-index:1;max-width:760px;width:100%;margin-left:auto;margin-right:auto;box-sizing:border-box}
-.mm-nav a{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:14px;padding:18px 0;text-decoration:none;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.07);position:relative;transition:padding-left .25s ease;-webkit-tap-highlight-color:transparent;opacity:0;transform:translateX(18px)}
+.mm-nav{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:24px 28px 8px;min-height:0;position:relative;z-index:1;max-width:760px;width:100%;margin-left:auto;margin-right:auto;box-sizing:border-box;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.mm-nav a{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:14px;padding:14px 0;text-decoration:none;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.07);position:relative;transition:padding-left .25s ease;-webkit-tap-highlight-color:transparent;opacity:0;transform:translateX(18px)}
 .mobile-menu.open .mm-nav a{animation:mmFadeIn .45s ease forwards}
 .mobile-menu.open .mm-nav a:nth-child(1){animation-delay:.06s}
 .mobile-menu.open .mm-nav a:nth-child(2){animation-delay:.11s}
